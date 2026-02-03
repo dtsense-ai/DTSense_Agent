@@ -32,8 +32,8 @@ def load_vectorstore():
 vectorstore = load_vectorstore()
 retriever = vectorstore.as_retriever()
 
-search_tool = TavilySearchResults(k=3)
-llm = ChatGroq(model_name="deepseek-r1-distill-llama-70b")
+search_tool = TavilySearchResults(max_results=3, api_key=os.environ.get("TAVILY_API_KEY"))
+llm = ChatGroq(model_name="openai/gpt-oss-20b")
 
 # --- Graph State ---
 class GraphState(TypedDict):
@@ -67,7 +67,7 @@ def vectorstore_node(state: GraphState):
     return {"docs": docs}
 
 combine_prompt = ChatPromptTemplate.from_messages([
-    ("system", "Answer the question based on the provided context."),
+    ("system", "Answer the question based on the provided context. please don't make up answers if the information is not available in the context and answer with 'I don't know'."),
     ("human", "Question: {query}\n\nContext:\n{context}")
 ])
 
