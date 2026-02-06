@@ -21,11 +21,21 @@ load_dotenv()
 # --- PINECONE SETUP ---
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 index_name = "medical-index"
-index = pc.Index(index_name)
 
 @st.cache_resource
 def load_vectorstore():
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    
+    # Check if index exists, if not create it
+    try:
+        index = pc.Index(index_name)
+        # Verify index exists by getting its description
+        index.describe_index_stats()
+    except Exception as e:
+        st.warning(f"Index '{index_name}' not found. Please create it in Pinecone first.")
+        st.info("Steps: Go to https://app.pinecone.io → Create Index → Name: 'medical-index' → Dimension: 384 → Create")
+        st.stop()
+    
     vectorstore = PineconeVectorStore(index=index, embedding=embeddings)
     return vectorstore
 
@@ -138,7 +148,10 @@ with st.sidebar:
         retrieval_method = st.radio("Choose retrieval source:", ("Auto", "Pinecone", "Tavily"))
     with st.expander("Show Workflow Diagram"):
         st.markdown("## LangGraph Workflow")
-        st.image(agentic_rag.get_graph().draw_mermaid_png())
+        try:
+            st.image(agentic_rag.get_graph().draw_mermaid_png())
+        except Exception as e:
+            st.warning("📊 Workflow diagram temporarily unavailable. The mermaid.ink API may be down.")
     with st.expander("💬 Conversation History", expanded=True):
         search = st.text_input("Search history")
         filtered_history = [msg for msg in st.session_state.chat_history if search.lower() in msg["content"].lower()] if search else st.session_state.chat_history
