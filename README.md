@@ -11,19 +11,19 @@ Pastikan Anda telah menginstal:
 1. **Kloning Repositori**
 
    ```bash
-   git clone https://github.com/DTSense/DTS_FASTAPI_LANGSERVE.git
-   cd DTS_FASTAPI_LANGSERVE
+   git clone https://github.com/DTSense/DTSense_Agent.git
+   cd DTSense_Agent
    ```
 2. Buat dan Aktifkan Virtual Environment
     ```bash
-   python -m venv venv
-   source venv/bin/activate   # Pada Windows gunakan: venv\Scripts\activate    
+   python -m venv .venv
+   source .venv/bin/activate   # Pada Windows gunakan: venv\Scripts\activate    
    ```
 3. Install Dependensi
     ```bash
    pip install -r requirements.txt    
    ```
-4. JALANKAN STREAMLIT di Terminal
+4. JALANKAN STREAMLIT di Terminal untuk aplikasi simple RAG text based dan Agentic RAG with Pinecone
     ```bash
    streamlit run app_st.py 
    atau
