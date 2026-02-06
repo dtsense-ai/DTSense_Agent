@@ -1,9 +1,10 @@
-langchain
-langchain-huggingface
-langchain-community
-langchain-pinecone
-langchain-groq
-python-dotenv
-sentence-transformers
-langgraph
-streamlit
+#GENAI & AGENTIC AI Frameworks
+langchain==1.2.8
+langchain-huggingface==1.2.0
+langchain-community==0.4.1
+langchain-pinecone==0.2.13
+langchain-groq==1.1.2
+python-dotenv==1.2.1
+sentence-transformers==5.2.2
+langgraph==1.0.7
+streamlit==1.53.1

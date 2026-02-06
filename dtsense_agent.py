@@ -20,19 +20,19 @@ load_dotenv()
 
 # --- PINECONE SETUP ---
 pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
-index_name = "dts-data-test"
+index_name = "medical-index"
 index = pc.Index(index_name)
 
 @st.cache_resource
 def load_vectorstore():
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/gtr-t5-base")
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     vectorstore = PineconeVectorStore(index=index, embedding=embeddings)
     return vectorstore
 
 vectorstore = load_vectorstore()
 retriever = vectorstore.as_retriever()
 
-search_tool = TavilySearchResults(max_results=5)
+search_tool = TavilySearchResults(max_results=3, api_key=os.environ.get("TAVILY_API_KEY"))
 llm = ChatGroq(model_name="openai/gpt-oss-20b")
 
 # --- Graph State ---
@@ -67,7 +67,7 @@ def vectorstore_node(state: GraphState):
     return {"docs": docs}
 
 combine_prompt = ChatPromptTemplate.from_messages([
-    ("system", "Answer the question based on the provided context."),
+    ("system", "Answer the question based on the provided context. please don't make up answers if the information is not available in the context and answer with 'I don't know'."),
     ("human", "Question: {query}\n\nContext:\n{context}")
 ])
 
